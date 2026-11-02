@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "routes": [
+    {
+      "src": "/api/link",
+      "dest": "/api/link.js"
+    },
+    {
+      "src": "/article",
+      "dest": "/public/article.html"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/index.html"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "ouo-destination-portal",
+  "version": "1.0.0",
+  "description": "Dynamic Content & Tracking Destination Portal for Vercel",
+  "main": "api/index.js",
+  "scripts": {
+    "start": "node api/index.js"
+  },
+  "dependencies": {}
+}
