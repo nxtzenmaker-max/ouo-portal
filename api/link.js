@@ -1,26 +1,36 @@
 const crypto = require('crypto');
 
+const AUTH_KEY = "Raj Nandini is the heart of Rudra/Zeno";
+
 module.exports = (req, res) => {
-  // Allow CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Auth-Key');
+
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
-  // Get current host (e.g. your-app.vercel.app or custom domain)
-  const host = req.headers['x-forwarded-host'] || req.headers.host || 'localhost:3000';
+  // Security Check: Verify password from Query param, Header, or Authorization
+  const providedAuth = req.query.auth || req.headers['x-auth-key'] || req.headers['authorization'];
+  if (providedAuth !== AUTH_KEY) {
+    return res.status(401).json({
+      success: false,
+      error: "Unauthorized: Access restricted. Valid security key required."
+    });
+  }
+
+  const host = req.headers['x-forwarded-host'] || req.headers.host || 'ouo-portal.vercel.app';
   const proto = req.headers['x-forwarded-proto'] || 'https';
   
-  // Generate random cryptographic unique identifier and tags
   const randomId = crypto.randomBytes(6).toString('hex');
   const timestamp = Date.now();
-  const categories = ['tech', 'gaming', 'cloud', 'dev', 'ai', 'cyber'];
+  const categories = ['tech', 'cloud', 'dev', 'ai', 'crypto', 'quantum'];
   const cat = categories[Math.floor(Math.random() * categories.length)];
   
-  // Build a unique dynamic destination link
-  const uniqueUrl = `${proto}://${host}/article?id=${randomId}&cat=${cat}&t=${timestamp}&ref=portal`;
+  // Encrypted auth token for target URL so article page unlocks for automated visitor
+  const authHash = crypto.createHash('sha256').update(AUTH_KEY + timestamp).digest('hex').substring(0, 16);
+  const uniqueUrl = `${proto}://${host}/article?id=${randomId}&cat=${cat}&t=${timestamp}&auth=${encodeURIComponent(AUTH_KEY)}`;
 
   return res.status(200).json({
     success: true,

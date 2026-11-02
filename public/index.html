@@ -3,81 +3,168 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NexusTech Portal — Cloud & Developer Insights</title>
+  <title>NexusTech Portal — Restricted Access</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
   <style>
-    body { background-color: #0d1117; color: #c9d1d9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    .navbar { background-color: #161b22; border-bottom: 1px solid #30363d; }
-    .card { background-color: #161b22; border: 1px solid #30363d; border-radius: 8px; }
+    body { background-color: #0b0f17; color: #c9d1d9; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; min-height: 100vh; }
+    .navbar { background-color: #121824; border-bottom: 1px solid #252f3e; }
+    .card { background-color: #121824; border: 1px solid #252f3e; border-radius: 12px; }
     .btn-brand { background-color: #238636; color: white; border: none; }
     .btn-brand:hover { background-color: #2ea043; color: white; }
-    .badge-tech { background-color: #1f6feb; }
-    .footer { border-top: 1px solid #30363d; margin-top: 60px; padding: 25px 0; color: #8b949e; }
+    .btn-danger-custom { background-color: #da3633; color: white; border: none; }
+    
+    /* Lock Screen Modal Overlay */
+    #lock-overlay {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(11, 15, 23, 0.98);
+      z-index: 99999;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    .lock-card {
+      max-width: 440px; width: 100%;
+      background: #161f30; border: 1px solid #2d3b52;
+      border-radius: 16px; padding: 35px 25px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+      text-align: center;
+    }
+    .lock-icon { font-size: 3.5rem; margin-bottom: 15px; }
+    .form-control-dark {
+      background: #0d1420; border: 1px solid #2d3b52; color: #fff;
+      padding: 12px 16px; border-radius: 8px; text-align: center;
+    }
+    .form-control-dark:focus {
+      background: #0d1420; border-color: #58a6ff; color: #fff; box-shadow: 0 0 0 2px rgba(88,166,255,0.2);
+    }
   </style>
 </head>
 <body>
-  <nav class="navbar navbar-expand-lg navbar-dark py-3">
-    <div class="container">
-      <a class="navbar-brand fw-bold text-white" href="/">⚡ NexusTech Portal</a>
-      <div class="ms-auto">
-        <a href="/api/link" target="_blank" class="btn btn-sm btn-outline-info">🔗 API Generator</a>
-      </div>
-    </div>
-  </nav>
 
-  <div class="container my-5">
-    <div class="row align-items-center mb-5">
-      <div class="col-lg-8">
-        <h1 class="display-5 fw-bold text-white">Next-Generation Cloud Architecture & Automation</h1>
-        <p class="lead text-secondary">Exploring autonomous agent workflows, distributed cloud architectures, and modern edge serverless pipelines.</p>
-        <button id="btn-gen" class="btn btn-brand px-4 py-2 fw-semibold">Generate Dynamic Link</button>
+  <!-- Hardcoded Security Lock Screen -->
+  <div id="lock-overlay">
+    <div class="lock-card">
+      <div class="lock-icon">🔒</div>
+      <h3 class="text-white fw-bold mb-2">Restricted Security Gate</h3>
+      <p class="text-secondary small mb-4">This portal is private. Enter the master access key to proceed.</p>
+      
+      <div class="mb-3">
+        <input type="password" id="pass-input" class="form-control form-control-dark mb-2" placeholder="Enter Master Password">
+        <div id="error-msg" class="text-danger small d-none">❌ Access Denied: Incorrect Security Key!</div>
       </div>
-      <div class="col-lg-4 text-center">
-        <div class="p-4 card shadow-sm">
-          <h6 class="text-secondary text-uppercase mb-2">Generated Target</h6>
-          <code id="gen-output" class="text-break text-info">Click button to generate...</code>
-        </div>
-      </div>
-    </div>
-
-    <h3 class="text-white mb-4">Featured Publications</h3>
-    <div class="row g-4">
-      <div class="col-md-4">
-        <div class="card p-3 h-100">
-          <span class="badge badge-tech mb-2 w-auto align-self-start">Edge Computing</span>
-          <h5 class="text-white">Low-Latency Serverless at Scale</h5>
-          <p class="text-secondary small">How Vercel edge functions minimize round-trip times globally.</p>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card p-3 h-100">
-          <span class="badge badge-tech mb-2 w-auto align-self-start">Automation</span>
-          <h5 class="text-white">Headless Chromium Workflows</h5>
-          <p class="text-secondary small">Reliable browser synthesis and verification strategies.</p>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card p-3 h-100">
-          <span class="badge badge-tech mb-2 w-auto align-self-start">Security</span>
-          <h5 class="text-white">Cloudflare Turnstile Mechanics</h5>
-          <p class="text-secondary small">Understanding proof-of-work challenges in modern web defense.</p>
-        </div>
-      </div>
+      
+      <button id="btn-unlock" class="btn btn-brand w-100 py-2 fw-semibold">Unlock Portal 🔓</button>
+      <div class="mt-4 text-muted small">Protected by ROX AI & RJN</div>
     </div>
   </div>
 
-  <footer class="footer text-center">
-    <div class="container">
-      <p class="mb-0">&copy; 2026 NexusTech Portal. Verified Destination Service.</p>
+  <!-- Main Authenticated Portal (Hidden until password verified) -->
+  <div id="portal-content" class="d-none">
+    <nav class="navbar navbar-expand-lg navbar-dark py-3">
+      <div class="container">
+        <a class="navbar-brand fw-bold text-white" href="/">⚡ NexusTech Portal</a>
+        <div class="ms-auto d-flex gap-2">
+          <button id="btn-lock-again" class="btn btn-sm btn-outline-danger">🔒 Lock</button>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container my-5">
+      <div class="row align-items-center mb-5">
+        <div class="col-lg-8">
+          <span class="badge bg-success mb-2">Authorized Session</span>
+          <h1 class="display-5 fw-bold text-white">Next-Generation Cloud Architecture & Automation</h1>
+          <p class="lead text-secondary">Dynamic link synthesis, verified ad impression gateways, and low-latency edge servers.</p>
+          <button id="btn-gen" class="btn btn-brand px-4 py-2 fw-semibold">Generate Dynamic Link</button>
+        </div>
+        <div class="col-lg-4 text-center">
+          <div class="p-4 card shadow-sm">
+            <h6 class="text-secondary text-uppercase mb-2">Generated Target</h6>
+            <code id="gen-output" class="text-break text-info">Click button to generate...</code>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="text-white mb-4">Active Modules</h3>
+      <div class="row g-4">
+        <div class="col-md-4">
+          <div class="card p-3 h-100">
+            <span class="badge bg-primary mb-2 w-auto align-self-start">Edge Serverless</span>
+            <h5 class="text-white">Dynamic Routing</h5>
+            <p class="text-secondary small">Vercel serverless functions returning parameterized target pages.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-3 h-100">
+            <span class="badge bg-info mb-2 w-auto align-self-start">Ad Impression</span>
+            <h5 class="text-white">View Verification</h5>
+            <p class="text-secondary small">Natural timer & viewability mechanics for 100% monetization credit.</p>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="card p-3 h-100">
+            <span class="badge bg-warning text-dark mb-2 w-auto align-self-start">Security</span>
+            <h5 class="text-white">Turnstile Defense</h5>
+            <p class="text-secondary small">Anti-detection browser synthesis with residential proxy rotation.</p>
+          </div>
+        </div>
+      </div>
     </div>
-  </footer>
+
+    <footer class="text-center py-4 text-secondary border-top border-secondary mt-5">
+      &copy; 2026 NexusTech Portal. Dedicated to Rudra / Zeno & Raj Nandini (RJN).
+    </footer>
+  </div>
 
   <script>
-    document.getElementById('btn-gen').addEventListener('click', async () => {
-      const res = await fetch('/api/link');
-      const data = await res.json();
-      document.getElementById('gen-output').innerText = data.url;
+    const MASTER_KEY = "Raj Nandini is the heart of Rudra/Zeno";
+
+    function checkAuth() {
+      const stored = localStorage.getItem('nexus_auth') || sessionStorage.getItem('nexus_auth');
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlAuth = urlParams.get('auth');
+
+      if (stored === MASTER_KEY || urlAuth === MASTER_KEY) {
+        localStorage.setItem('nexus_auth', MASTER_KEY);
+        document.getElementById('lock-overlay').classList.add('d-none');
+        document.getElementById('portal-content').classList.remove('d-none');
+        return true;
+      }
+      return false;
+    }
+
+    document.getElementById('btn-unlock').addEventListener('click', () => {
+      const val = document.getElementById('pass-input').value.trim();
+      if (val === MASTER_KEY) {
+        localStorage.setItem('nexus_auth', MASTER_KEY);
+        document.getElementById('lock-overlay').classList.add('d-none');
+        document.getElementById('portal-content').classList.remove('d-none');
+      } else {
+        document.getElementById('error-msg').classList.remove('d-none');
+      }
     });
+
+    document.getElementById('pass-input').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') document.getElementById('btn-unlock').click();
+    });
+
+    document.getElementById('btn-lock-again').addEventListener('click', () => {
+      localStorage.removeItem('nexus_auth');
+      sessionStorage.removeItem('nexus_auth');
+      location.reload();
+    });
+
+    document.getElementById('btn-gen').addEventListener('click', async () => {
+      try {
+        const res = await fetch(`/api/link?auth=${encodeURIComponent(MASTER_KEY)}`);
+        const data = await res.json();
+        document.getElementById('gen-output').innerText = data.url;
+      } catch (e) {
+        document.getElementById('gen-output').innerText = "Error: " + e;
+      }
+    });
+
+    // Run auth check on load
+    checkAuth();
   </script>
 </body>
 </html>
